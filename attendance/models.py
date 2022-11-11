@@ -13,7 +13,7 @@ class Lecturer(models.Model):
 
 class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
-    DDOB = models.DateField(blank=True, null=True)
+    DOB = models.DateField(blank=True, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_user')
 
     def __str__(self):
@@ -58,8 +58,12 @@ class CollegeDay(models.Model):
     date = models.DateField()
     student = models.ForeignKey(Student, on_delete=models.CASCADE, default=False)
     attendance = models.BooleanField(default=False)
-    theClass = models.ManyToManyField(Class, verbose_name='college_day')
+    theClass = models.ForeignKey(Class, on_delete=models.CASCADE, )
     # collegeDay = models.ForeignKey(CollegeDayDate, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ['date', 'student', 'theClass']
+        ordering = ['theClass', 'date']
 
     def __str__(self):
         return self.student.user.first_name +" "+ self.student.user.last_name

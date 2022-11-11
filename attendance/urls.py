@@ -17,13 +17,20 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from attendance.views import index, semester_list, class_list, course_list, SemesterViewSet
+from attendance.views import index, SemesterViewSet, ClassViewSet, CourseViewSet, StudentViewSet, LecturerViewSet, \
+    CollegeDayViewSet, UserViewSet
 
 router = DefaultRouter()
 router.register('semester_viewset', SemesterViewSet, 'semester_model_viewset')
+router.register('class_viewset', ClassViewSet, 'class_model_viewset')
+router.register('course_viewset', CourseViewSet, 'course_model_viewset')
+router.register('student_viewset', StudentViewSet, 'student_model_viewset')
+router.register('lecturer_viewset', LecturerViewSet, 'lecturer_model_viewset')
+router.register('collegeday_viewset', CollegeDayViewSet, 'collegeday_model_viewset')
+router.register('user_viewset', UserViewSet, 'user_model_viewset')
 urlpatterns = router.urls
-urlpatterns.append(path('', index))
-urlpatterns.append(path('semester/', semester_list))
+# urlpatterns.append(path('', index))
+# urlpatterns.append(path('semester/', semester_list))
 # urlpatterns.append(path('course/', course_list))
 # urlpatterns.append(path('class/', class_list))
 

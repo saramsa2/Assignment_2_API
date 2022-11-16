@@ -1,4 +1,7 @@
 from django.contrib.auth.models import User, Group
+from django.core.files import File
+from django.core.mail import send_mail
+from django.forms import FileField
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
@@ -11,12 +14,9 @@ class SemesterSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ClassSerializer(serializers.ModelSerializer):
-    # semester = serializers.StringRelatedField(read_only=True)
-    # course = serializers.StringRelatedField(read_only=True)
     class Meta:
         model = Class
-        # fields = '__all__'
-        fields = ["id", "number", "semester", 'course', "student"]
+        fields = '__all__'
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,7 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "username", 'password', 'groups']
+        fields = ["id", "username", 'password', "first_name", "last_name",'email', 'groups']
 
         extra_kwargs = {'password': {
             'write_only': True,
@@ -67,6 +67,17 @@ class StudentSerializer(serializers.ModelSerializer):
         student = Student.objects.create(user=user, **validated_data)
         return student
 
+    def update(self, instance, validated_data):
+        new_user = validated_data.pop("user")
+        user = User.objects.get(id=instance.user.id)
+        user.first_name = new_user.get("first_name")
+        user.last_name = new_user.get("last_name")
+        user.email = new_user.get("email")
+        user.save()
+        instance.DOB = validated_data.get("DOB")
+        instance.save()
+        return instance
+
 class LecturerSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, required=True)
 
@@ -78,5 +89,26 @@ class LecturerSerializer(serializers.ModelSerializer):
         new_user = validated_data.pop("user")
         user = User.objects.create_user(**new_user)
         user.groups.add(2)
-        student = Lecturer.objects.create(user=user, **validated_data)
-        return student
+        lecturer = Lecturer.objects.create(user=user, **validated_data)
+        return lecturer
+
+    def update(self, instance, validated_data):
+        new_user = validated_data.pop("user")
+        user = User.objects.get(id=instance.user.id)
+        user.email = new_user.get("email")
+        user.first_name = new_user.get("first_name")
+        user.last_name = new_user.get("last_name")
+        user.save()
+        instance.DOB = validated_data.get("DOB")
+        instance.save()
+        return instance
+
+class SendEmailSerializer(serializers.Serializer):
+    subject = serializers.CharField()
+    receiver = serializers.EmailField()
+    body = serializers.CharField()
+
+
+
+
+

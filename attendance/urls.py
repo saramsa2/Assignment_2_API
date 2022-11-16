@@ -18,7 +18,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from attendance.views import index, SemesterViewSet, ClassViewSet, CourseViewSet, StudentViewSet, LecturerViewSet, \
-    CollegeDayViewSet, UserViewSet
+    CollegeDayViewSet, UserViewSet, User_group, Send_Email
 
 router = DefaultRouter()
 router.register('semester_viewset', SemesterViewSet, 'semester_model_viewset')
@@ -29,14 +29,6 @@ router.register('lecturer_viewset', LecturerViewSet, 'lecturer_model_viewset')
 router.register('collegeday_viewset', CollegeDayViewSet, 'collegeday_model_viewset')
 router.register('user_viewset', UserViewSet, 'user_model_viewset')
 urlpatterns = router.urls
-# urlpatterns.append(path('', index))
-# urlpatterns.append(path('semester/', semester_list))
-# urlpatterns.append(path('course/', course_list))
-# urlpatterns.append(path('class/', class_list))
+urlpatterns.append(path('usergroup/', User_group))
+urlpatterns.append(path('sendmail/', Send_Email))
 
-# urlpatterns = [
-#     path('', index),
-#     path('semester/', semester_list),
-#     path('course/', course_list),
-#     path('class/', class_list),
-# ]

@@ -24,12 +24,16 @@ class Semester(models.Model):
     year = models.IntegerField(blank=False)
     semester = models.CharField(max_length=50)
 
+    class Meta:
+        unique_together = ['year', 'semester']
+        ordering = ['year', 'semester']
+
     def __str__(self):
         return self.semester
 
 
 class Course(models.Model):
-    code = models.CharField(max_length=50)
+    code = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=100)
 
     def __str__(self):
@@ -37,12 +41,15 @@ class Course(models.Model):
 
 
 class Class(models.Model):
-    number = models.IntegerField(null=False, blank=False)
+    number = models.IntegerField(null=False, blank=False, unique=True)
     semester = models.ForeignKey(Semester,  on_delete=models.CASCADE, null=False, blank=False)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False, blank=False)
     lecturer = models.ForeignKey(Lecturer, on_delete=models.SET_NULL, null=True, blank=True)
     student = models.ManyToManyField(Student, verbose_name='enrolled student', blank=True)
 
+    class Meta:
+        unique_together = ['course', 'semester']
+        ordering = ['number']
 
     def __str__(self):
         return self.number.__str__()

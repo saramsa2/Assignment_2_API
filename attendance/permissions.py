@@ -9,8 +9,16 @@ class IsAdmin(permissions.BasePermission):
     #     return obj.author == request.user
 
     message = "You are not administrator"
+
     def has_permission(self, request, view):
         user_groups = request.user.groups.values_list("name", flat=True)
         if "Admin" in user_groups:
+            return True
+        return False
+
+class IsLecturer(permissions.BasePermission):
+    def has_permission(self, request, view):
+        user_groups = request.user.groups.values_list("name", flat=True)
+        if "Lecturer" in user_groups:
             return True
         return False

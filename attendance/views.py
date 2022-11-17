@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from attendance.models import Semester, Class, Course, Student, Lecturer, CollegeDay
-from attendance.permissions import IsAdmin, IsLecturer
+from attendance.permissions import IsAdmin, IsLecturerOrAdminOrReadOnly
 from attendance.serializers import SemesterSerializer, ClassSerializer, CourseSerializer, StudentSerializer, \
     LecturerSerializer, CollegeDaySerializer, UserSerializer, GroupSerializer, SendEmailSerializer
 
@@ -35,7 +35,7 @@ class ClassViewSet(viewsets.ModelViewSet):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
     authentication_classes = (TokenAuthentication,)
-    permission_classes = [IsAdmin, ]
+    permission_classes = [IsLecturerOrAdminOrReadOnly, ]
 
 class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
@@ -53,7 +53,7 @@ class CollegeDayViewSet(viewsets.ModelViewSet):
     queryset = CollegeDay.objects.all()
     serializer_class = CollegeDaySerializer
     authentication_classes = (TokenAuthentication,)
-    permission_classes = [IsAdmin, ]
+    permission_classes = [IsLecturerOrAdminOrReadOnly, ]
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -88,3 +88,26 @@ def Send_Email(request):
     sender = "saramsa2@gmail.com"
     send_mail(subject, body, sender, [receiver], fail_silently=False)
     return Response(serializer.data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def LoginUserSearch(request):
+    return Response({"name": request.user.first_name +" " + request.user.last_name})
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def LecturerIdSearch(request):
+    lecturer_user = request.user
+    lecturer_id = Lecturer.objects.get(user=lecturer_user).staff_id
+    return Response({"staff_id": lecturer_id})
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def StudentIdSearch(request):
+    student_user = request.user
+    student_id = Student.objects.get(user=student_user).student_id
+    # return Response("test ")
+    return Response({"student_id": student_id})

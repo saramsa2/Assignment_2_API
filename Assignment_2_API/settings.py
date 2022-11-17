@@ -145,5 +145,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'saramsa2@sokopie.ml'
-EMAIL_HOST_PASSWORD = 'e86443fd70d43459df235bd32b9e8b3b-2de3d545-afe088bd'
+EMAIL_HOST_PASSWORD = '1977404724c2f7d3baa24e4a4d72887f-2de3d545-c1ae38cc'
 EMAIL_USE_TLS = True
